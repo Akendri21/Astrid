@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌿 Fotosíntesis STEAM · Vibrante + Ingeniería divertida</title>
+  <!-- Fuentes, iconos, Chart.js y canvas-confetti -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #d0f0d0 0%, #b0e0c0 100%);
+      color: #0a2f1f;
+      line-height: 1.5;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ---------- BARRA DE PESTAÑAS MÁS VIBRANTE ---------- */
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 0.25rem;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 0.8rem 1.5rem;
+      border-radius: 60px;
+      margin-bottom: 2rem;
+      box-shadow: 0 15px 30px rgba(0, 100, 50, 0.3), 0 0 0 2px #a0e0b0 inset;
+      border: 1px solid #80d0a0;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #0f4a2f;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+    }
+
+    .tab-btn i {
+      font-size: 1.2rem;
+      filter: drop-shadow(0 2px 2px rgba(0,80,0,0.3));
+    }
+
+    .tab-btn:hover {
+      background: #c0f0d0;
+      color: #045d36;
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 15px rgba(0,150,50,0.3);
+    }
+
+    .tab-btn.active {
+      background: #2eb872;
+      color: white;
+      box-shadow: 0 8px 20px #2eb872, 0 0 15px #a0ffc0;
+      text-shadow: 0 2px 5px black;
+    }
+
+    /* ---------- PÁGINAS ---------- */
+    .page {
+      display: none;
+    }
+
+    .page.active-page {
+      display: block;
+    }
+
+    /* ---------- TARJETAS CON COLORES VIBRANTES ---------- */
+    .section-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 3rem;
+      padding: 2rem 2rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 30px 40px -15px rgba(20, 100, 30, 0.5), 0 0 0 2px #c0ffd0 inset;
+      border: 1px solid #80f0a0;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .section-card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 35px 50px -15px #1e7e5a, 0 0 0 3px #b0ffc0 inset;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0b6e3f;
+      margin-bottom: 1.8rem;
+      border-left: 14px solid #7ef0a0;
+      padding-left: 1.5rem;
+      text-shadow: 2px 2px 0 #d0ffd0;
+    }
+
+    .section-title i {
+      color: #1abc9c;
+      font-size: 2.2rem;
+      filter: drop-shadow(0 4px 4px #1e7e5a);
+    }
+
+    /* Botones vibrantes */
+    button, .btn {
+      background: linear-gradient(145deg, #2eb872, #1e7e5a);
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 0.8rem 2rem;
+      border-radius: 60px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 8px 18px rgba(0, 120, 30, 0.4), 0 0 0 2px #b0ffb0 inset;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    button:hover {
+      background: linear-gradient(145deg, #3ad98b, #2a9d6e);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 25px rgba(0, 150, 0, 0.5), 0 0 0 3px #d0ffd0 inset;
+    }
+
+    input, select {
+      background: white;
+      border: 3px solid #9fdfb2;
+      border-radius: 40px;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s;
+      box-shadow: 0 4px 8px rgba(0,80,0,0.1);
+    }
+
+    input:focus {
+      border-color: #2ecc71;
+      box-shadow: 0 0 0 5px rgba(46, 204, 113, 0.4);
+    }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 1.8rem;
+    }
+
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+    /* ---------- NUEVA ACTIVIDAD DE INGENIERÍA (ordenar) ---------- */
+    .engineer-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .parts-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: #f9ffe0;
+      border-radius: 60px;
+      padding: 2rem;
+      border: 4px dashed #f39c12;
+      justify-content: center;
+      min-height: 150px;
+      box-shadow: 0 0 0 4px #ffe28c inset;
+    }
+
+    .part-card {
+      background: linear-gradient(145deg, #ffd966, #f1c40f);
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 10px 0 #b38b40, 0 8px 18px #c9902e;
+      cursor: grab;
+      user-select: none;
+      border: 3px solid #ffe88c;
+      color: #2c3e50;
+      transition: 0.1s;
+      transform: rotate(0deg);
+    }
+
+    .part-card:active {
+      opacity: 0.7;
+      cursor: grabbing;
+    }
+
+    .slots-area {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      background: #b8e0c0;
+      border-radius: 70px;
+      padding: 2rem;
+      border: 5px dashed #2ecc71;
+    }
+
+    .slot {
+      background: #ecf9f0;
+      border: 4px solid #27ae60;
+      border-radius: 50px;
+      padding: 1rem;
+      min-width: 170px;
+      text-align: center;
+      font-weight: 700;
+      box-shadow: 0 8px 0 #1e7e5a, 0 10px 20px rgba(0,80,0,0.3);
+    }
+
+    .slot-header {
+      font-size: 1.2rem;
+      color: #0b4b2b;
+      margin-bottom: 0.5rem;
+      border-bottom: 2px solid #7befb2;
+      padding-bottom: 0.3rem;
+    }
+
+    .slot-dropzone {
+      background: #d5f0dc;
+      border-radius: 40px;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #1e5631;
+      border: 3px dashed #2ecc71;
+      transition: 0.1s;
+    }
+
+    .slot-dropzone.filled {
+      background: #bef5d5;
+      border: 4px solid #2ecc71;
+      font-weight: bold;
+      color: #094523;
+    }
+
+    .reset-btn {
+      background: #e67e22;
+      margin-top: 1rem;
+      align-self: center;
+    }
+
+    /* mensaje ganador */
+    .win-message {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #d35400;
+      text-shadow: 0 3px 10px #f39c12;
+      background: #fffacd;
+      border-radius: 60px;
+      padding: 1rem;
+      margin-top: 1rem;
+      animation: pulse 0.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); background: #fff3b0; }
+    }
+
+    /* ranking y otros */
+    .ranking-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #edf7f0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,70,0,0.2);
+    }
+
+    .ranking-table th {
+      background: #2eb872;
+      color: white;
+      padding: 0.75rem;
+      font-weight: 700;
+    }
+
+    .ranking-table td {
+      padding: 0.6rem;
+      border-bottom: 1px solid #c8e0d1;
+      text-align: center;
+    }
+
+    .slider-group {
+      background: #c0f0d0;
+      border-radius: 40px;
+      padding: 1rem 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 6px 0 #58a36f;
+    }
+
+    .drawing-canvas {
+      border: 6px dashed #f1c40f;
+      border-radius: 40px;
+      background: white;
+      cursor: crosshair;
+      box-shadow: 0 20px 30px rgba(0,80,0,0.3);
+    }
+
+    .steam-footer {
+      background: #0f6642;
+      color: #eafaf0;
+      border-radius: 70px;
+      padding: 2rem;
+      text-align: center;
+      margin-top: 2rem;
+      border: 3px solid #b0ffc0;
+      box-shadow: 0 0 30px #7befb2;
+    }
+
+    .feedback-msg {
+      background: #f7dc6f;
+      color: #1e4a2b;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 700;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- MENÚ DE PÁGINAS (pestañas) -->
+  <nav class="tab-bar" id="tabBar">
+    <button class="tab-btn active" data-page="intro"><i class="fas fa-home"></i> Inicio</button>
+    <button class="tab-btn" data-page="juego"><i class="fas fa-gamepad"></i> Juego</button>
+    <button class="tab-btn" data-page="simulacion"><i class="fas fa-chart-line"></i> Simulación</button>
+    <button class="tab-btn" data-page="ingenieria"><i class="fas fa-draw-polygon"></i> Ingeniería</button>
+    <button class="tab-btn" data-page="arte"><i class="fas fa-paint-brush"></i> Arte</button>
+    <button class="tab-btn" data-page="matematicas"><i class="fas fa-calculator"></i> Matemáticas</button>
+    <button class="tab-btn" data-page="ranking"><i class="fas fa-trophy"></i> Ranking</button>
+    <button class="tab-btn" data-page="evaluacion"><i class="fas fa-clipboard-check"></i> Evaluación</button>
+  </nav>
+
+  <!-- PÁGINA: INTRODUCCIÓN INTERACTIVA -->
+  <div id="page-intro" class="page active-page">
+    <section class="section-card">
+      <div class="section-title"><i class="fas fa-sun-plant-wilt"></i> Introducción: ¿Qué sabes?</div>
+      <div class="grid-2">
+        <div style="background: #caf0d6; border-radius: 40px; padding: 1.5rem;">
+          <h3><i class="fas fa-circle-info"></i> Fotosíntesis en acción</h3>
+          <p>🌞 Las plantas usan luz, CO₂ y agua para producir glucosa y oxígeno. Fase lumínica (clorofila) y fase oscura (ciclo de Calvin).</p>
+          <div style="font-size: 3rem; text-align: center;">🌿 ➔ ⚡ ➔ 🍬 + 🌬️</div>
+        </div>
+        <div>
+          <h3>¿Qué sabes? (elige)</h3>
+          <div id="introQuiz">
+            <p><strong>1.</strong> ¿Cuál es el gas que las plantas absorben principalmente?</p>
+            <button class="intro-opt" data-correct="false">Oxígeno</button>
+            <button class="intro-opt" data-correct="true">Dióxido de carbono</button>
+            <button class="intro-opt" data-correct="false">Nitrógeno</button>
+            <p id="introFeed1" style="margin-top:0.5rem; font-weight:600;"></p>
+            <p><strong>2.</strong> ¿En qué orgánulo ocurre la fotosíntesis?</p>
+            <button class="intro-opt" data-correct="false">Núcleo</button>
+            <button class="intro-opt" data-correct="true">Cloroplasto</button>
+            <button class="intro-opt" data-correct="false">Mitocondria</button>
+            <p id="introFeed2" style="margin-top:0.5rem; font-weight:600;"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PÁGINA: JUEGO DIDÁCTICO CIENTÍFICO -->
+  <div id="page-juego" class="page">
+    <section class="section-card">
+      <div class="section-title"><i class="fas fa-gamepad"></i> Juego científico · Quiz por niveles</div>
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        <div style="flex:2">
+          <div id="quizArea">
+            <p><strong id="levelShow">Nivel fácil</strong> · Puntuación: <span id="scoreDisplay">0</span></p>
+            <div id="questionText" style="background:white; border-radius: 30px; padding:1.5rem;">Cargando pregunta...</div>
+            <div id="optionsArea" style="display:flex; flex-wrap:wrap; gap:1rem; margin:1.5rem 0;"></div>
+            <button id="nextQuizBtn" disabled>Siguiente ➡️</button>
+          </div>
+        </div>
+        <div style="flex:1; background:#c1e0d0; border-radius: 40px; padding:1.5rem;">
+          <h4>🏆 Ranking quiz (top 20)</h4>
+          <div id="quizRankingTable"></div>
+          <div style="margin-top:1rem">
+            <input type="text" id="quizName" placeholder="Tu nombre" maxlength="20">
+            <button id="saveQuizScore">Guardar puntuación</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PÁGINA: SIMULACIÓN VIRTUAL REALISTA -->
+  <div id="page-simulacion" class="page">
+    <section class="section-card">
+      <div class="section-title"><i class="fas fa-chart-line"></i> Simulación: factores limitantes</div>
+      <div class="grid-2">
+        <div>
+          <div class="slider-group"><div class="slider-label"><span>💡 Intensidad luz (%)</span><span id="lightVal">80</span></div><input type="range" id="light" min="0" max="100" value="80" step="1"></div>
+          <div class="slider-group"><div class="slider-label"><span>🌬️ CO₂ (ppm)</span><span id="co2Val">600</span></div><input type="range" id="co2" min="0" max="1500" value="600" step="10"></div>
+          <div class="slider-group"><div class="slider-label"><span>🌡️ Temperatura (°C)</span><span id="tempVal">25</span></div><input type="range" id="temp" min="0" max="50" value="25" step="0.5"></div>
+          <div class="slider-group"><div class="slider-label"><span>💧 Agua (%)</span><span id="waterVal">70</span></div><input type="range" id="water" min="0" max="100" value="70" step="1"></div>
+          <button id="saveScenarioA">📌 Guardar escenario A</button>
+          <button id="saveScenarioB">📌 Guardar escenario B</button>
+          <button id="compareScenarios">🔍 Comparar</button>
+          <div id="simFeedback" class="feedback-msg">Ajusta las variables</div>
+        </div>
+        <div>
+          <canvas id="simChart" width="400" height="250" style="background:white; border-radius: 40px; padding:10px;"></canvas>
+          <div style="margin-top:1rem"><strong>Reto eficiencia:</strong> máxima producción <span id="maxProdDisplay">0</span> glucosa <button id="submitMaxProduction">🏅 Enviar mi récord</button></div>
+          <div id="simRanking"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PÁGINA: ACTIVIDAD DE INGENIERÍA (NUEVA VERSIÓN) -->
+  <div id="page-ingenieria" class="page">
+    <section class="section-card">
+      <div class="section-title"><i class="fas fa-draw-polygon"></i> Ingeniería: ordena las partes de la hoja</div>
+      <div class="engineer-container">
+        <!-- Piezas desordenadas (se generan por JS) -->
+        <div class="parts-pool" id="partsPool"></div>
+        <!-- Ranuras donde soltar -->
+        <div class="slots-area" id="slotsArea"></div>
+        <button class="reset-btn" id="resetEngineering"><i class="fas fa-undo-alt"></i> Reiniciar juego</button>
+        <div id="winMessage" style="display: none;" class="win-message">🎉 ¡Felicidades, has ganado! 🎉</div>
+      </div>
+      <p style="margin-top:1.5rem; text-align:center">Arrastra cada pieza a su ranura correcta. ¡Completa todas para ganar!</p>
+    </section>
+  </div>
+
+  <!-- PÁGINA: ACTIVIDAD ARTÍSTICA -->
+  <div id="page-arte" class="page">
+    <section class="section-card">
+      <div class="section-title"><i class="fas fa-paint-brush"></i> Arte: póster digital</div>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap">
+        <canvas id="artCanvas" width="400" height="250" class="drawing-canvas"></canvas>
+        <div style="display:flex; flex-direction:column; gap:1rem">
+          <input type="color" id="colorPicker" value="#2ecc71">
+          <button id="clearCanvas">Limpiar</button>
+          <p>¡Dibuja tu mensaje sobre la fotosíntesis!</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PÁGINA: ACTIVIDAD MATEMÁTICA -->
+  <div id="page-matematicas" class="page">
+    <section class="section-card">
+      <div class="section-title"><i class="fas fa-calculator"></i> Matemática de la fotosíntesis</div>
+      <div class="grid-2">
+        <div>
+          <p>⚖️ La reacción simplificada: 6 CO₂ + 6 H₂O → C₆H₁₂O₆ + 6 O₂</p>
+          <p><strong>Problema 1:</strong> Si una planta produce 12 moléculas de O₂, ¿cuántas moléculas de glucosa se formaron?</p>
+          <input type="number" id="math1" placeholder="Tu respuesta"> <button id="checkMath1">Comprobar</button> <span id="math1Feed"></span>
+        </div>
+        <div>
+          <p><strong>Problema 2:</strong> ¿Qué proporción de átomos de carbono hay en 180 g de glucosa? (Masa molar C=12, H=1, O=16)</p>
+          <input type="number" id="math2" placeholder="gramos de C"> <button id="checkMath2">Comprobar</button> <span id="math2Feed"></span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PÁGINA: RANKING GLOBAL -->
+  <div id="page-ranking" class="page">
+    <section class="section-card">
+      <div class="section-title"><i class="fas fa-trophy"></i> Ranking global</div>
+      <div class="grid-2">
+        <div>
+          <h3>🏅 Quiz - Mejores 20</h3>
+          <div id="globalQuizRank"></div>
+        </div>
+        <div>
+          <h3>🌿 Eficiencia fotosintética (máx glucosa)</h3>
+          <div id="globalSimRank"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PÁGINA: EVALUACIÓN DEL APRENDIZAJE -->
+  <div id="page-evaluacion" class="page">
+    <section class="section-card">
+      <div class="section-title"><i class="fas fa-clipboard-check"></i> Autoevaluación</div>
+      <div class="grid-3">
+        <div><label>Comprendo el proceso general</label> <select id="eval1"><option value="1">1 - Básico</option><option value="2">2 - Medio</option><option value="3">3 - Avanzado</option><option value="4">4 - Experto</option></select></div>
+        <div><label>Identifico factores limitantes</label> <select id="eval2"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+        <div><label>Puedo explicar la ecuación química</label> <select id="eval3"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+      </div>
+      <button id="getEvalFeedback">Ver retroalimentación</button>
+      <p id="evalFeedback" style="margin-top:1rem; font-weight:600;"></p>
+    </section>
+  </div>
+
+  <!-- JUSTIFICACIÓN STEAM (visible en todas las páginas) -->
+  <footer class="steam-footer">
+    <h3>🧪🔧🎨📐 Justificación STEAM</h3>
+    <p><strong>Ciencia</strong> (Biología): proceso fotosintético. <strong>Tecnología</strong>: simulación y base de datos. <strong>Ingeniería</strong>: modelo de hoja. <strong>Arte</strong>: póster digital. <strong>Matemáticas</strong>: problemas estequiométricos. Aprendizaje activo y gamificado.</p>
+    <p><i class="fas fa-users"></i> Uso en aula: guía docente, equipos, competencia sana y creatividad.</p>
+  </footer>
+</div>
+
+<script>
+  (function() {
+    // ---------- SISTEMA DE PESTAÑAS (páginas) ----------
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const pages = document.querySelectorAll('.page');
+
+    function activatePage(pageId) {
+      pages.forEach(p => p.classList.remove('active-page'));
+      const targetPage = document.getElementById('page-' + pageId);
+      if (targetPage) targetPage.classList.add('active-page');
+      
+      tabBtns.forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.tab-btn[data-page="${pageId}"]`).classList.add('active');
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const pageId = e.currentTarget.dataset.page;
+        activatePage(pageId);
+      });
+    });
+
+    // ---------- 1. INTRO QUIZ ----------
+    document.querySelectorAll('.intro-opt').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const correct = e.target.dataset.correct === 'true';
+        if (e.target.innerText.includes('Oxígeno') || e.target.innerText.includes('Dióxido') || e.target.innerText.includes('Nitrógeno')) {
+          document.getElementById('introFeed1').innerText = correct ? '✅ Correcto!' : '❌ No, el gas es CO₂';
+        } else {
+          document.getElementById('introFeed2').innerText = correct ? '✅ ¡Bien! Cloroplasto' : '❌ Ocurre en cloroplastos';
+        }
+      });
+    });
+
+    // ---------- 2. JUEGO QUIZ ----------
+    const questions = [
+      {level:'easy', q:'¿Qué produce la fotosíntesis?', options:['Oxígeno y glucosa','Solo oxígeno','Dióxido de carbono'], correct:0},
+      {level:'easy', q:'¿Dónde está la clorofila?', options:['En el núcleo','En los tilacoides','En la vacuola'], correct:1},
+      {level:'medium', q:'¿Cuál es la fórmula de la glucosa?', options:['C₆H₁₂O₆','CO₂','C₂H₅OH'], correct:0},
+      {level:'medium', q:'Fase oscura: ¿qué molécula se fija?', options:['Oxígeno','CO₂','Agua'], correct:1},
+      {level:'hard', q:'¿Qué enzima clave fija el CO₂?', options:['ATP sintasa','Rubisco','PEP carboxilasa'], correct:1},
+      {level:'hard', q:'¿Cuántos ATP se producen en la fase lumínica (aprox)?', options:['18-24','3-6','30-32'], correct:0}
+    ];
+    let currentQ = 0, score = 0;
+    const scoreSpan = document.getElementById('scoreDisplay');
+    const levelShow = document.getElementById('levelShow');
+    const questionDiv = document.getElementById('questionText');
+    const optionsDiv = document.getElementById('optionsArea');
+    const nextBtn = document.getElementById('nextQuizBtn');
+    function loadQuestion() {
+      const q = questions[currentQ];
+      levelShow.innerText = `Nivel ${q.level}`;
+      questionDiv.innerText = q.q;
+      optionsDiv.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.classList.add('btn');
+        btn.style.margin = '0.5rem';
+        btn.onclick = () => {
+          if (idx === q.correct) {
+            score += (q.level==='easy'?5: q.level==='medium'?10:15);
+            alert('✅ Correcto! +'+ (q.level==='easy'?5: q.level==='medium'?10:15) + ' puntos');
+          } else {
+            alert('❌ Incorrecto');
+          }
+          scoreSpan.innerText = score;
+          nextBtn.disabled = false;
+          optionsDiv.querySelectorAll('button').forEach(b => b.disabled=true);
+        };
+        optionsDiv.appendChild(btn);
+      });
+      nextBtn.disabled = true;
+    }
+    loadQuestion();
+    nextBtn.addEventListener('click', ()=>{
+      currentQ = (currentQ+1) % questions.length;
+      loadQuestion();
+    });
+
+    // Ranking quiz
+    let quizScores = JSON.parse(localStorage.getItem('quizRank')) || [];
+    function renderQuizRank() {
+      const sorted = [...quizScores].sort((a,b)=>b.score - a.score).slice(0,20);
+      let html = '<table class="ranking-table"><tr><th>Nombre</th><th>Puntos</th></tr>';
+      sorted.forEach(s => html += `<tr><td>${s.name}</td><td>${s.score}</td></tr>`);
+      html += '</table>';
+      document.getElementById('quizRankingTable').innerHTML = html;
+      document.getElementById('globalQuizRank').innerHTML = html;
+    }
+    renderQuizRank();
+    document.getElementById('saveQuizScore').addEventListener('click', ()=>{
+      const name = document.getElementById('quizName').value.trim() || 'Anónimo';
+      quizScores.push({name, score});
+      quizScores = quizScores.sort((a,b)=>b.score-a.score).slice(0,20);
+      localStorage.setItem('quizRank', JSON.stringify(quizScores));
+      renderQuizRank();
+    });
+
+    // ---------- 3. SIMULACIÓN ----------
+    const ctx = document.getElementById('simChart').getContext('2d');
+    const simChart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: ['Glucosa (g/m²/día)', 'Oxígeno (L)'],
+              datasets: [{ label: 'Producción', data: [0,0], backgroundColor: ['#2ecc71','#3498db'] }] },
+      options: { scales: { y: { beginAtZero: true } } }
+    });
+    function actualizarSim() {
+      let luz = document.getElementById('light').value/100;
+      let co2 = document.getElementById('co2').value/1500;
+      let temp = document.getElementById('temp').value;
+      let agua = document.getElementById('water').value/100;
+      let fLuz = Math.min(1, luz/0.8);
+      let fCO2 = Math.min(1, co2/0.8);
+      let fTemp = Math.exp(-Math.pow((temp-25)/12,2));
+      let fAgua = agua;
+      let produccion = Math.min(fLuz, fCO2, fTemp, fAgua) * 20;
+      let oxigeno = produccion * 0.8;
+      simChart.data.datasets[0].data = [produccion.toFixed(1), oxigeno.toFixed(1)];
+      simChart.update();
+      document.getElementById('simFeedback').innerText = `🌱 Producción: ${produccion.toFixed(1)} g. ${fTemp<0.5?'⚠️ Temperatura fuera de rango.':''} ${fLuz<0.3?'💡 Poca luz.':''}`;
+      return produccion;
+    }
+    document.getElementById('light').addEventListener('input', (e)=>document.getElementById('lightVal').innerText=e.target.value);
+    document.getElementById('co2').addEventListener('input', (e)=>document.getElementById('co2Val').innerText=e.target.value);
+    document.getElementById('temp').addEventListener('input', (e)=>document.getElementById('tempVal').innerText=e.target.value);
+    document.getElementById('water').addEventListener('input', (e)=>document.getElementById('waterVal').innerText=e.target.value);
+    [ 'light','co2','temp','water'].forEach(id => document.getElementById(id).addEventListener('input', actualizarSim));
+    actualizarSim();
+
+    let simRank = JSON.parse(localStorage.getItem('simRank')) || [];
+    function renderSimRank() {
+      const sorted = [...simRank].sort((a,b)=>b.prod - a.prod).slice(0,20);
+      let html = '<table class="ranking-table"><tr><th>Nombre</th><th>Prod glucosa</th></tr>';
+      sorted.forEach(s => html += `<tr><td>${s.name}</td><td>${s.prod.toFixed(1)}</td></tr>`);
+      html += '</table>';
+      document.getElementById('simRanking').innerHTML = html;
+      document.getElementById('globalSimRank').innerHTML = html;
+    }
+    renderSimRank();
+    document.getElementById('submitMaxProduction').addEventListener('click', ()=>{
+      const prod = actualizarSim();
+      let name = prompt('Tu nombre para el récord de eficiencia:') || 'Anónimo';
+      simRank.push({name, prod});
+      simRank = simRank.sort((a,b)=>b.prod - a.prod).slice(0,20);
+      localStorage.setItem('simRank', JSON.stringify(simRank));
+      renderSimRank();
+    });
+
+    let scenarioA = null, scenarioB = null;
+    document.getElementById('saveScenarioA').addEventListener('click', ()=>{ scenarioA = actualizarSim(); alert('Escenario A guardado'); });
+    document.getElementById('saveScenarioB').addEventListener('click', ()=>{ scenarioB = actualizarSim(); alert('Escenario B guardado'); });
+    document.getElementById('compareScenarios').addEventListener('click', ()=>{
+      if(scenarioA!==null && scenarioB!==null) alert(`Escenario A: ${scenarioA.toFixed(1)} g glucosa  |  Escenario B: ${scenarioB.toFixed(1)} g`);
+      else alert('Guarda ambos escenarios primero');
+    });
+
+    // ---------- 4. NUEVA INGENIERÍA (ordenar partes) ----------
+    const leafParts = [
+      { name: 'Cutícula', slot: '.' },
+      { name: 'Epidermis superior', slot: '.' },
+      { name: 'Parénquima en empalizada', slot: '.' },
+      { name: 'Parénquima esponjoso', slot: '.' },
+      { name: 'Nervio (xilema/floema)', slot: '.' },
+      { name: 'Estoma', slot: '.' }
+    ];
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    let shuffledParts = shuffleArray([...leafParts]);
+    const partsPool = document.getElementById('partsPool');
+    const slotsArea = document.getElementById('slotsArea');
+    const winDiv = document.getElementById('winMessage');
+    const resetBtn = document.getElementById('resetEngineering');
+    let slotsFilled = new Array(leafParts.length).fill(null);
+
+    function renderGame() {
+      partsPool.innerHTML = '';
+      slotsArea.innerHTML = '';
+
+      const availableParts = shuffledParts.filter(p => !slotsFilled.includes(p.name));
+      availableParts.forEach(part => {
+        const card = document.createElement('div');
+        card.className = 'part-card';
+        card.draggable = true;
+        card.innerText = part.name;
+        card.setAttribute('data-part', part.name);
+        card.addEventListener('dragstart', handleDragStart);
+        partsPool.appendChild(card);
+      });
+
+      leafParts.forEach((part, index) => {
+        const slotDiv = document.createElement('div');
+        slotDiv.className = 'slot';
+        slotDiv.innerHTML = `
+          <div class="slot-header">${part.slot}</div>
+          <div class="slot-dropzone" data-slot-index="${index}" data-expected="${part.name}"></div>
+        `;
+        slotsArea.appendChild(slotDiv);
+
+        const dropzone = slotDiv.querySelector('.slot-dropzone');
+        if (slotsFilled[index] === part.name) {
+          dropzone.innerText = part.name;
+          dropzone.classList.add('filled');
+        } else {
+          dropzone.innerText = '⬇️ Suelta aquí';
+          dropzone.classList.remove('filled');
+        }
+
+        dropzone.addEventListener('dragover', (e) => e.preventDefault());
+        dropzone.addEventListener('drop', handleDrop);
+      });
+
+      const allFilled = leafParts.every((part, idx) => slotsFilled[idx] === part.name);
+      if (allFilled) {
+        winDiv.style.display = 'block';
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.5, x: 0.2 }, colors: ['#2ecc71', '#f1c40f'] });
+      } else {
+        winDiv.style.display = 'none';
+      }
+    }
+
+    function handleDragStart(e) {
+      e.dataTransfer.setData('text/plain', e.target.dataset.part);
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const droppedPartName = e.dataTransfer.getData('text/plain');
+      const dropzone = e.currentTarget;
+      const slotIndex = parseInt(dropzone.dataset.slotIndex);
+      const expectedPart = dropzone.dataset.expected;
+
+      if (droppedPartName === expectedPart) {
+        if (slotsFilled[slotIndex] !== null) {
+          alert('Esta ranura ya tiene una pieza. Usa "Reiniciar" para empezar de nuevo.');
+          return;
+        }
+        slotsFilled[slotIndex] = droppedPartName;
+        const partIndex = shuffledParts.findIndex(p => p.name === droppedPartName);
+        if (partIndex !== -1) shuffledParts.splice(partIndex, 1);
+        renderGame();
+      } else {
+        alert('❌ Pieza incorrecta. ¡Vuelve a intentarlo! Se reiniciará el juego.');
+        resetGame();
+      }
+    }
+
+    function resetGame() {
+      shuffledParts = shuffleArray([...leafParts]);
+      slotsFilled = new Array(leafParts.length).fill(null);
+      renderGame();
+    }
+
+    resetGame();
+    resetBtn.addEventListener('click', resetGame);
+
+    // ---------- 5. ARTE canvas ----------
+    const canvas = document.getElementById('artCanvas');
+    const ctxArt = canvas.getContext('2d');
+    let painting = false;
+    canvas.addEventListener('mousedown', (e) => { painting = true; ctxArt.beginPath(); ctxArt.moveTo(e.offsetX, e.offsetY); });
+    canvas.addEventListener('mousemove', (e) => { if(painting) { ctxArt.strokeStyle = document.getElementById('colorPicker').value; ctxArt.lineWidth = 3; ctxArt.lineTo(e.offsetX, e.offsetY); ctxArt.stroke(); } });
+    canvas.addEventListener('mouseup', () => painting = false);
+    canvas.addEventListener('mouseleave', () => painting = false);
+    document.getElementById('clearCanvas').addEventListener('click', ()=> ctxArt.clearRect(0,0,canvas.width,canvas.height));
+
+    // ---------- 6. MATEMÁTICAS ----------
+    document.getElementById('checkMath1').addEventListener('click', ()=>{
+      const val = parseInt(document.getElementById('math1').value);
+      document.getElementById('math1Feed').innerText = (val === 2) ? '✅ Correcto, 2 glucosas' : '❌ Revisa: 12 O₂ → 2 glucosa';
+    });
+    document.getElementById('checkMath2').addEventListener('click', ()=>{
+      const val = parseInt(document.getElementById('math2').value);
+      document.getElementById('math2Feed').innerText = (val === 72) ? '✅ 72 g de carbono' : '❌ Glucosa 180g → C=72g';
+    });
+
+    // ---------- 8. EVALUACIÓN ----------
+    document.getElementById('getEvalFeedback').addEventListener('click', ()=>{
+      const e1 = parseInt(document.getElementById('eval1').value);
+      const e2 = parseInt(document.getElementById('eval2').value);
+      const e3 = parseInt(document.getElementById('eval3').value);
+      const prom = (e1+e2+e3)/3;
+      if(prom>=3.5) document.getElementById('evalFeedback').innerText = '🌟 Excelente dominio, puedes ayudar a otros.';
+      else if(prom>=2.5) document.getElementById('evalFeedback').innerText = '✅ Buen avance, sigue practicando.';
+      else document.getElementById('evalFeedback').innerText = '🌱 Revisa los conceptos clave otra vez.';
+    });
+  })();
+</script>
+
+<!-- pequeños ajustes extra -->
+<style>
+  #globalQuizRank, #globalSimRank { background: #e3f2e8; border-radius: 30px; padding: 1rem; margin-top:1rem; }
+  .ranking-table { width:100%; }
+  .steam-footer { margin-top: 2rem; }
+</style>
+</body>
+</html>
